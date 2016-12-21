@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # changer dir
-cd /tmp
+#cd /tmp
 
 website='http://www.vpnbook.com'
 webpage="$website/freevpn"
@@ -27,8 +27,9 @@ choose_vpn(){
 done
 
 }
+
 # download html
-wget -q -O $vpn_file $webpage
+wget -q -nv -O $vpn_file $webpage
 
 
 
@@ -58,7 +59,8 @@ do
     "EUROPE1")
       file="EUROPE1.zip"
       echo -e "Connecting to the EUROPE1 server"
-      wget -q -nv -O $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
+      #wget -q -nv -O $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
+      wget -q -nv -O $file $website${urls[0]} && unzip -qq $file 
       cd EUROPE1/
       choose_vpn
       break
@@ -66,7 +68,8 @@ do
     "EUROPE2")
       file="EUROPE2.zip"
       echo -e "Connecting to the EUROPE2 server"
-      wget -q -nv -O $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
+      #wget -q -nv -O $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
+      wget -q -nv -O $file $website${urls[1]} && unzip -qq $file
       cd EUROPE2/
       choose_vpn
       break
@@ -74,7 +77,8 @@ do
     "USA1")
       file="USA1.zip"
       echo -e "Connecting to the USA1 server"
-      wget -q -nv -O $file $website${urls[2]} && unzip -qq -d "USA1" $file
+      #wget -q -nv -O $file $website${urls[2]} && unzip -qq -d "USA1" $file
+      wget -q -nv -O $file $website${urls[2]} && unzip -qq $file
       cd USA1/
       choose_vpn
       break
@@ -82,7 +86,8 @@ do
     "USA2")
       file="USA2.zip"
       echo -e "Connecting to the USA2 server"
-      wget -q -nv -O $file $website${urls[3]} && unzip -qq -d "USA2" $file
+      #wget -q -nv -O $file $website${urls[3]} && unzip -qq -d "USA2" $file
+      wget -q -nv -O $file $website${urls[3]} && unzip -qq $file
       cd USA2/
       choose_vpn
       break
@@ -90,7 +95,8 @@ do
     "CANADA")
       file="CANADA.zip"
       echo -e "Connecting to the CANADA server"
-      wget -q -nv -O $file $website${urls[4]} && unzip -qq -d "CANADA" $file
+      #wget -q -nv -O $file $website${urls[4]} && unzip -qq -d "CANADA" $file
+      wget -q -nv -O $file $website${urls[4]} && unzip -qq $file
       cd CANADA/
       choose_vpn
       break
@@ -98,7 +104,8 @@ do
     "GERMANY")
       file="GERMANY.zip"
       echo -e "Connecting to the GERMANY server"
-      wget -q -nv -O $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
+      #wget -q -nv -O $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
+      wget -q -nv -O $file $website${urls[5]} && unzip -qq $file
       cd GERMANY/
       choose_vpn
       break
