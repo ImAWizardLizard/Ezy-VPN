@@ -57,7 +57,7 @@ do
     "EUROPE1")
       file="EUROPE1.zip"
       echo -e "Connecting to the EUROPE1 server"
-      wget -qO $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
+      wget -q -nv -O $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
       cd EUROPE1/
       choose_vpn
       break
@@ -65,7 +65,7 @@ do
     "EUROPE2")
       file="EUROPE2.zip"
       echo -e "Connecting to the EUROPE2 server"
-      wget -qO $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
+      wget -q -nv -O $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
       cd EUROPE2/
       choose_vpn
       break
@@ -73,7 +73,7 @@ do
     "USA1")
       file="USA1.zip"
       echo -e "Connecting to the USA1 server"
-      wget -qO $file $website${urls[2]} && unzip -qq -d "USA1" $file
+      wget -q -nv -O $file $website${urls[2]} && unzip -qq -d "USA1" $file
       cd USA1/
       choose_vpn
       break
@@ -81,7 +81,7 @@ do
     "USA2")
       file="USA2.zip"
       echo -e "Connecting to the USA2 server"
-      wget -qO $file $website${urls[3]} && unzip -qq -d "USA2" $file
+      wget -q -nv -O $file $website${urls[3]} && unzip -qq -d "USA2" $file
       cd USA2/
       choose_vpn
       break
@@ -89,7 +89,7 @@ do
     "CANADA")
       file="CANADA.zip"
       echo -e "Connecting to the CANADA server"
-      wget -qO $file $website${urls[4]} && unzip -qq -d "CANADA" $file
+      wget -q -nv -O $file $website${urls[4]} && unzip -qq -d "CANADA" $file
       cd CANADA/
       choose_vpn
       break
@@ -97,7 +97,7 @@ do
     "GERMANY")
       file="GERMANY.zip"
       echo -e "Connecting to the GERMANY server"
-      wget -qO $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
+      wget -q -nv -O $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
       cd GERMANY/
       choose_vpn
       break
