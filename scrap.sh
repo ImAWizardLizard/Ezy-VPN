@@ -1,8 +1,11 @@
 #! /usr/bin/env bash
 
+# changer dir
+cd /tmp
+
 website='http://www.vpnbook.com'
 webpage="$website/freevpn"
-file='/tmp/vpns.html'
+vpn_file='vpns.html'
 
 choose_vpn(){
   local vpns=($(ls) "EXIT")
@@ -25,17 +28,17 @@ done
 
 }
 # download html
-wget -q -O $file $webpage
+wget -q -O $vpn_file $webpage
 
 
 
 username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
- $file 2>/dev/null )
+ $vpn_file 2>/dev/null )
 
 
 
 password=$(xmllint --html --xpath \
-'(//li[contains(text(),"Password")])[2]/strong/text()' $file 2>/dev/null )
+  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null )
 
 
 echo -e "USE THESE CREDENTIALS\n\nUsername: ${username}\nPassword: ${password}"
@@ -43,13 +46,11 @@ echo -e "USE THESE CREDENTIALS\n\nUsername: ${username}\nPassword: ${password}"
 
 vpns=$(xmllint --html --xpath \
   '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
- $file 2>/dev/null | sed s/href=//g | sed s/\"//g  )
+  $vpn_file 2>/dev/null | sed s/href=//g | sed s/\"//g  )
 
 urls=($vpns)
 
 options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
-
-cd /tmp
 
 select opt in "${options[@]}"
 do
