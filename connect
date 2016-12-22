@@ -37,7 +37,13 @@ username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong
 password=$(xmllint --html --xpath \
   '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null )
 
-echo -e "USE THESE CREDENTIALS\n\nUsername: ${username}\nPassword: ${password}"
+cat << EOF
+USE THESE CREDENTIALS
+
+Username: ${username}
+Password: ${password}
+
+EOF
 
 vpns=$(xmllint --html --xpath \
   '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
@@ -51,62 +57,56 @@ select opt in "${options[@]}"
 do
   case $opt in 
     "EUROPE1")
-      file="EUROPE1.zip"
+      dirname="EUROPE1"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the EUROPE1 server"
-      #wget -q -nv -O $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
-      #wget -q -nv -O $file $website${urls[0]} && unzip -qq $file 
-      curl -s -o $file $website${urls[0]} && unzip -qq -d "EUROPE1" $file
+      curl -s $website${urls[0]} | bsdtar xf - -C $dirname
       cd EUROPE1/
       choose_vpn
       break
     ;;
     "EUROPE2")
-      file="EUROPE2.zip"
+      dirname="EUROPE2"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the EUROPE2 server"
-      #wget -q -nv -O $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
-      #wget -q -nv -O $file $website${urls[1]} && unzip -qq $file
-      curl -s -o $file $website${urls[1]} && unzip -qq -d "EUROPE2" $file
-      cd EUROPE2/
+      curl -s $website${urls[1]} | bsdtar xf - -C $dirname
+      cd $dirname 
       choose_vpn
       break
     ;;
     "USA1")
-      file="USA1.zip"
+      dirname="USA1"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the USA1 server"
-      #wget -q -nv -O $file $website${urls[2]} && unzip -qq -d "USA1" $file
-      #wget -q -nv -O $file $website${urls[2]} && unzip -qq $file
-      curl -s -o $file $website${urls[2]} && unzip -qq -d "USA1" $file
-      cd USA1/
+      curl -s $website${urls[2]} | bsdtar xf - -C $dirname
+      cd $dirname 
       choose_vpn
       break
     ;;
     "USA2")
-      file="USA2.zip"
+      dirname="USA2"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the USA2 server"
-      #wget -q -nv -O $file $website${urls[3]} && unzip -qq -d "USA2" $file
-      #wget -q -nv -O $file $website${urls[3]} && unzip -qq $file
-      curl -s -o $file $website${urls[3]} && unzip -qq -d "USA2" $file
-      cd USA2/
+      curl -s $website${urls[3]} | bsdtar xf - -C $dirname
+      cd $dirname
       choose_vpn
       break
     ;;
     "CANADA")
-      file="CANADA.zip"
+      dirname="CANADA"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the CANADA server"
-      #wget -q -nv -O $file $website${urls[4]} && unzip -qq -d "CANADA" $file
-      #wget -q -nv -O $file $website${urls[4]} && unzip -qq $file
-      curl -s -o $file $website${urls[4]} && unzip -qq -d "CANADA" $file
-      cd CANADA/
+      curl -s $website${urls[4]} | bsdtar xf - -C $dirname
+      cd $dirname
       choose_vpn
       break
     ;;
     "GERMANY")
-      file="GERMANY.zip"
+      dirname="GERMANY"
+      mkdir -p $dirname 2>/dev/null
       echo -e "Connecting to the GERMANY server"
-      #wget -q -nv -O $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
-      #wget -q -nv -O $file $website${urls[5]} && unzip -qq $file
-      curl -s -o $file $website${urls[5]} && unzip -qq -d "GERMANY" $file
-      cd GERMANY/
+      curl -s $website${urls[5]} | bsdtar xf - -C $dirname
+      cd $dirname 
       choose_vpn
       break
     ;;
