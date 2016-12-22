@@ -2,13 +2,13 @@
 
 # changer dir for temporary file useage
 cd /tmp
-echo $(pwd)
+
 website='http://www.vpnbook.com'
 webpage="$website/freevpn"
 vpn_file='vpns.html'
 
 choose_vpn(){
-  local vpns=($(ls) "EXIT")
+  local vpns=($(ls *.ovpn) "EXIT")
   select vpn in "${vpns[@]}"
   do
     case $vpn in
@@ -28,15 +28,14 @@ done
 
 }
 
-
 # download html
 wget -q -nv -O $vpn_file $webpage
 
 username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
- $vpn_file 2>/dev/null )
+ $vpn_file 2>/dev/null)
 
 password=$(xmllint --html --xpath \
-  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null )
+  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
 
 cat << EOF
 USE THESE CREDENTIALS
@@ -48,10 +47,9 @@ EOF
 
 vpns=$(xmllint --html --xpath \
   '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
-  $vpn_file 2>/dev/null | sed s/href=//g | sed s/\"//g  )
+  $vpn_file 2>/dev/null | sed -e 's/href=//g;s/\"//g')
 
 urls=($vpns)
-echo $urls
 
 options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
 
@@ -59,7 +57,7 @@ download_and_unzip(){
 
   index=$1
   file_name=$2
-  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq $file_name
+  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq -u $file_name
   rm -rf $file_name
 
 }
@@ -69,7 +67,7 @@ do
   case $opt in 
     "EUROPE1")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt 
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 0 $zip_name
@@ -78,7 +76,7 @@ do
     ;;
     "EUROPE2")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt 
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 1 $zip_name
@@ -87,7 +85,7 @@ do
     ;;
     "USA1")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt 
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 2 $zip_name
@@ -96,7 +94,7 @@ do
     ;;
     "USA2")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt 
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 3 $zip_name
@@ -105,7 +103,7 @@ do
     ;;
     "CANADA")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 4 $zip_name
@@ -114,7 +112,7 @@ do
     ;;
     "GERMANY")
       zip_name="${opt}.zip"
-      mkdir -p $opt 2>/dev/null
+      mkdir -p $opt 
       cd $opt
       echo -e "Connecting to the ${opt} server"
       download_and_unzip 5 $zip_name
