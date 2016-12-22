@@ -1,8 +1,8 @@
-#! /usr/bin/env bash
+#!/bin/bash 
 
 # changer dir for temporary file useage
 cd /tmp
-
+echo $(pwd)
 website='http://www.vpnbook.com'
 webpage="$website/freevpn"
 vpn_file='vpns.html'
@@ -28,6 +28,7 @@ done
 
 }
 
+
 # download html
 wget -q -nv -O $vpn_file $webpage
 
@@ -50,63 +51,73 @@ vpns=$(xmllint --html --xpath \
   $vpn_file 2>/dev/null | sed s/href=//g | sed s/\"//g  )
 
 urls=($vpns)
+echo $urls
 
 options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
+
+download_and_unzip(){
+
+  index=$1
+  file_name=$2
+  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq $file_name
+  rm -rf $file_name
+
+}
 
 select opt in "${options[@]}"
 do
   case $opt in 
     "EUROPE1")
-      dirname="EUROPE1"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the EUROPE1 server"
-      curl -s $website${urls[0]} | bsdtar xf - -C $dirname
-      cd EUROPE1/
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 0 $zip_name
       choose_vpn
       break
     ;;
     "EUROPE2")
-      dirname="EUROPE2"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the EUROPE2 server"
-      curl -s $website${urls[1]} | bsdtar xf - -C $dirname
-      cd $dirname 
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 1 $zip_name
       choose_vpn
       break
     ;;
     "USA1")
-      dirname="USA1"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the USA1 server"
-      curl -s $website${urls[2]} | bsdtar xf - -C $dirname
-      cd $dirname 
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 2 $zip_name
       choose_vpn
       break
     ;;
     "USA2")
-      dirname="USA2"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the USA2 server"
-      curl -s $website${urls[3]} | bsdtar xf - -C $dirname
-      cd $dirname
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 3 $zip_name
       choose_vpn
       break
     ;;
     "CANADA")
-      dirname="CANADA"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the CANADA server"
-      curl -s $website${urls[4]} | bsdtar xf - -C $dirname
-      cd $dirname
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 4 $zip_name
       choose_vpn
       break
     ;;
     "GERMANY")
-      dirname="GERMANY"
-      mkdir -p $dirname 2>/dev/null
-      echo -e "Connecting to the GERMANY server"
-      curl -s $website${urls[5]} | bsdtar xf - -C $dirname
-      cd $dirname 
+      zip_name="${opt}.zip"
+      mkdir -p $opt 2>/dev/null
+      cd $opt
+      echo -e "Connecting to the ${opt} server"
+      download_and_unzip 5 $zip_name
       choose_vpn
       break
     ;;
