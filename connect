@@ -1,11 +1,29 @@
 #!/bin/bash 
 
-# changer dir for temporary file useage
+# change dir for temporary file useage
 cd /tmp
 
 website='http://www.vpnbook.com'
 webpage="$website/freevpn"
 vpn_file='vpns.html'
+
+
+# download html
+wget -q -nv -O $vpn_file $webpage
+
+username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
+ $vpn_file 2>/dev/null)
+
+password=$(xmllint --html --xpath \
+  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
+
+vpns=$(xmllint --html --xpath \
+  '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
+  $vpn_file 2>/dev/null | sed -e 's/href=//g;s/\"//g')
+
+urls=($vpns)
+
+options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
 
 choose_vpn(){
   local vpns=($(ls *.ovpn) "EXIT")
@@ -28,14 +46,14 @@ done
 
 }
 
-# download html
-wget -q -nv -O $vpn_file $webpage
+download_and_unzip(){
 
-username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
- $vpn_file 2>/dev/null)
+  index=$1
+  file_name=$2
+  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq -u $file_name
+  rm -rf $file_name
 
-password=$(xmllint --html --xpath \
-  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
+}
 
 cat << EOF
 USE THESE CREDENTIALS
@@ -45,22 +63,6 @@ Password: ${password}
 
 EOF
 
-vpns=$(xmllint --html --xpath \
-  '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
-  $vpn_file 2>/dev/null | sed -e 's/href=//g;s/\"//g')
-
-urls=($vpns)
-
-options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
-
-download_and_unzip(){
-
-  index=$1
-  file_name=$2
-  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq -u $file_name
-  rm -rf $file_name
-
-}
 
 select opt in "${options[@]}"
 do
