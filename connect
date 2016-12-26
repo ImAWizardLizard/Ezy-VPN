@@ -11,12 +11,6 @@ vpn_file='vpns.html'
 # download html
 wget -q -nv -O $vpn_file $webpage
 
-username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
- $vpn_file 2>/dev/null)
-
-password=$(xmllint --html --xpath \
-  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
-
 vpns=$(xmllint --html --xpath \
   '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
   $vpn_file 2>/dev/null | sed -e 's/href=//g;s/\"//g')
@@ -54,6 +48,13 @@ download_and_unzip(){
   rm -rf $file_name
 
 }
+
+username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
+ $vpn_file 2>/dev/null)
+
+password=$(xmllint --html --xpath \
+  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
+
 
 cat << EOF
 USE THESE CREDENTIALS
