@@ -1,133 +1,185 @@
 #!/bin/bash 
 
-# change dir for temporary file useage
-cd /tmp
+readonly WEBSITE='http://www.vpnbook.com'
+readonly WEBPAGE="$WEBSITE/freevpn"
+readonly VPN_FILE='/tmp/vpns.html'
+readonly OPTIONS=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "CREDS" "QUIT")
+readonly PS3="Select a number (enter for options):"
 
-website='http://www.vpnbook.com'
-webpage="$website/freevpn"
-vpn_file='vpns.html'
 
 
-# download html
-wget -q -nv -O $vpn_file $webpage
+# function to download, unzip and remove zip folder
+download_and_unzip(){
 
-vpns=$(xmllint --html --xpath \
-  '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
-  $vpn_file 2>/dev/null | sed -e 's/href=//g;s/\"//g')
+  local index=$1
+  local file_name=$2
+  wget -q -nv -O $file_name $WEBSITE${vpns[$index]} && unzip -qq -u $file_name
+  rm -rf $file_name
 
-urls=($vpns)
+}
 
-options=("EUROPE1" "EUROPE2" "USA1" "USA2" "CANADA" "GERMANY" "QUIT")
 
+# function to choose the extracted vpns in the folder
 choose_vpn(){
-  local vpns=($(ls *.ovpn) "EXIT")
+
+  local vpns=($(ls *.ovpn) "CREDS" "EXIT" "BACK")
+
   select vpn in "${vpns[@]}"
   do
     case $vpn in
       *.ovpn)
         sudo openvpn $vpn
       ;;
+      "CREDS")
+        get_creds
+      ;;
       "EXIT") 
+        echo "Exiting program..."
+        exit
+      ;;
+      "BACK")
+        break
+      ;;
+      *)
+        echo "Invalid input" >&2
+        exit 1
+  esac
+done
+
+}
+# move to temporary directory for temp file usage
+temp_dir(){
+
+cd /tmp
+
+}
+
+# download html from vpn book
+download_html(){
+
+wget -q -nv -O $VPN_FILE $WEBPAGE
+
+}
+
+# get the credentials to use the vpn
+get_creds(){
+
+  # xpath to extract the username
+  local username=$(xmllint --html --xpath \
+            '(//li[contains(text(),"Username")])[2]/strong/text()' \
+             $VPN_FILE 2>/dev/null)
+  # xpath to extract the password
+  local password=$(xmllint --html --xpath \
+            '(//li[contains(text(),"Password")])[2]/strong/text()' \
+             $VPN_FILE 2>/dev/null)
+
+  # here document to show creds
+  cat <<- EOF
+
+
+
+  ######USE THESE CREDENTIALS######
+  Username: ${username}
+  Password: ${password}
+  ######USE THESE CREDENTIALS######
+
+
+
+EOF
+
+}
+
+
+# function to extract the vpn download urls
+get_vpns(){
+  
+  # xpath to populate the VPNS variable with an array of the download links to the vpns
+  vpns=($(xmllint --html --xpath \
+          '(//ul[contains(@class,"disc")])[2]//li/a/@href' \
+          $VPN_FILE 2>/dev/null \
+          | sed -e 's/href=//g;s/\"//g'))
+
+}
+
+
+# function to select the VPN server location
+select_location(){
+  local zip_name=
+
+  select opt in "${OPTIONS[@]}"
+  do
+    case $opt in 
+      "EUROPE1")
+        zip_name="${opt}.zip"
+        mkdir -p $opt 
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 0 $zip_name
+        choose_vpn
+      ;;
+      "EUROPE2")
+        zip_name="${opt}.zip"
+        mkdir -p $opt 
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 1 $zip_name
+        choose_vpn
+      ;;
+      "USA1")
+        zip_name="${opt}.zip"
+        mkdir -p $opt 
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 2 $zip_name
+        choose_vpn
+      ;;
+      "USA2")
+        zip_name="${opt}.zip"
+        mkdir -p $opt 
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 3 $zip_name
+        choose_vpn
+      ;;
+      "CANADA")
+        zip_name="${opt}.zip"
+        mkdir -p $opt
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 4 $zip_name
+        choose_vpn
+      ;;
+      "GERMANY")
+        zip_name="${opt}.zip"
+        mkdir -p $opt 
+        cd $opt
+        echo -e "Connecting to the ${opt} server"
+        download_and_unzip 5 $zip_name
+        choose_vpn
+      ;;
+      "CREDS")
+      get_creds
+      ;;
+      "QUIT")
         echo "Exiting program..."
         exit
       ;;
       *)
         echo "Invalid input" >&2
         exit 1
-        
-  esac
-done
+      esac
+  done
 
 }
 
-download_and_unzip(){
 
-  index=$1
-  file_name=$2
-  wget -q -nv -O $file_name $website${urls[$index]} && unzip -qq -u $file_name
-  rm -rf $file_name
+main(){
+
+  temp_dir
+  download_html
+  get_creds
+  get_vpns
+  select_location
 
 }
-
-username=$(xmllint --html --xpath '(//li[contains(text(),"Username")])[2]/strong/text()' \
- $vpn_file 2>/dev/null)
-
-password=$(xmllint --html --xpath \
-  '(//li[contains(text(),"Password")])[2]/strong/text()' $vpn_file 2>/dev/null)
-
-
-cat << EOF
-USE THESE CREDENTIALS
-
-Username: ${username}
-Password: ${password}
-
-EOF
-
-
-select opt in "${options[@]}"
-do
-  case $opt in 
-    "EUROPE1")
-      zip_name="${opt}.zip"
-      mkdir -p $opt 
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 0 $zip_name
-      choose_vpn
-      break
-    ;;
-    "EUROPE2")
-      zip_name="${opt}.zip"
-      mkdir -p $opt 
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 1 $zip_name
-      choose_vpn
-      break
-    ;;
-    "USA1")
-      zip_name="${opt}.zip"
-      mkdir -p $opt 
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 2 $zip_name
-      choose_vpn
-      break
-    ;;
-    "USA2")
-      zip_name="${opt}.zip"
-      mkdir -p $opt 
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 3 $zip_name
-      choose_vpn
-      break
-    ;;
-    "CANADA")
-      zip_name="${opt}.zip"
-      mkdir -p $opt
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 4 $zip_name
-      choose_vpn
-      break
-    ;;
-    "GERMANY")
-      zip_name="${opt}.zip"
-      mkdir -p $opt 
-      cd $opt
-      echo -e "Connecting to the ${opt} server"
-      download_and_unzip 5 $zip_name
-      choose_vpn
-      break
-    ;;
-    "QUIT")
-      echo "Exiting program..."
-      exit
-    ;;
-    *)
-      echo "Invalid input" >&2
-      exit 1
-    esac
-done
+main
