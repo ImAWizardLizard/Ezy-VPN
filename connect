@@ -28,19 +28,24 @@ choose_vpn(){
   do
     case $vpn in
       *.ovpn)
+        clear
         sudo openvpn $vpn
       ;;
       "CREDS")
+        clear
         get_creds
       ;;
       "EXIT") 
+        clear
         echo "Exiting program..."
         exit
       ;;
       "BACK")
+        clear
         break
       ;;
       *)
+        clear
         echo "Invalid input" >&2
         exit 1
   esac
@@ -110,14 +115,17 @@ select_location(){
   do
     case $opt in 
       "EUROPE1")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt 
         cd $opt
         echo -e "Connecting to the ${opt} server"
         download_and_unzip 0 $zip_name
         choose_vpn
+        clear
       ;;
       "EUROPE2")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt 
         cd $opt
@@ -126,6 +134,7 @@ select_location(){
         choose_vpn
       ;;
       "USA1")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt 
         cd $opt
@@ -134,6 +143,7 @@ select_location(){
         choose_vpn
       ;;
       "USA2")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt 
         cd $opt
@@ -142,6 +152,7 @@ select_location(){
         choose_vpn
       ;;
       "CANADA")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt
         cd $opt
@@ -150,6 +161,7 @@ select_location(){
         choose_vpn
       ;;
       "GERMANY")
+        clear
         zip_name="${opt}.zip"
         mkdir -p $opt 
         cd $opt
@@ -158,13 +170,16 @@ select_location(){
         choose_vpn
       ;;
       "CREDS")
-      get_creds
+        clear
+        get_creds
       ;;
       "QUIT")
+        clear
         echo "Exiting program..."
         exit
       ;;
       *)
+        clear
         echo "Invalid input" >&2
         exit 1
       esac
